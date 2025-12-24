@@ -52,6 +52,43 @@ public class UserRepository : IUserRepository
         return user;
     }
 
+    public IEnumerable<dynamic> GetAllUsers()
+    {
+        // Query All Users พร้อม Join กับ UserRoleMapping, Role, RolePermission, Permission
+        var users = _context.UserTb
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserRoleMappings)
+                .ThenInclude(urm => urm.Role)
+                    .ThenInclude(r => r.RolePermissions)
+                        .ThenInclude(rp => rp.Permission)
+            .Select(u => new
+            {
+                id = u.Id,
+                userId = u.UserId,
+                username = u.Username,
+                firstName = u.UserProfile.FirstName,
+                lastName = u.UserProfile.LastName,
+                age = u.UserProfile.Age,
+                roles = u.UserRoleMappings
+                    .Select(urm => new
+                    {
+                        roleId = urm.Role.RoleId,
+                        roleName = urm.Role.RoleName
+                    })
+                    .Distinct()
+                    .ToList(),
+                permissions = u.UserRoleMappings
+                    .SelectMany(urm => urm.Role.RolePermissions)
+                    .Select(rp => rp.Permission.Permission)
+                    .Distinct()
+                    .OrderBy(p => p)
+                    .ToList()
+            })
+            .ToList();
+
+        return users;
+    }
+
     public int CreateUser(UserModel user)
     {
         // Validate input
@@ -61,7 +98,7 @@ public class UserRepository : IUserRepository
         if (user.UserProfile == null)
             throw new ArgumentNullException(nameof(user.UserProfile));
 
-        // 1. Map ข้อมูลจาก Data.cs → Entity
+        // 1. สร้าง User entity พร้อม UserProfile
         var newUser = new UserModel
         {
             Id = user.Id,
@@ -72,30 +109,26 @@ public class UserRepository : IUserRepository
                 FirstName = user.UserProfile.FirstName,
                 LastName = user.UserProfile.LastName,
                 Age = user.UserProfile.Age
-            },
-            UserRoleMappings = new List<UserRoleMappingModel>()
-        };
-
-        // เพิ่ม Role Mappings (ความสัมพันธ์ User-Role)
-        if (user.UserRoleMappings != null && user.UserRoleMappings.Any())
-        {
-            foreach (var roleMapping in user.UserRoleMappings)
-            {
-                if (roleMapping?.Role != null)
-                {
-                    newUser.UserRoleMappings.Add(new UserRoleMappingModel
-                    {
-                        UserId = user.Id,
-                        RoleId = roleMapping.Role.RoleId
-                    });
-                }
             }
-        }
+        };
 
         // 2. เพิ่ม User ลงใน DbContext
         _context.UserTb.Add(newUser);
 
-        // 3. บันทึกการเปลี่ยนแปลงและ return จำนวน row ที่ถูก affect
+        // 3. เพิ่ม Role Mappings (อ้างอิง RoleId ที่มีอยู่แล้วในฐานข้อมูล)
+        if (user.UserRoleMappings != null && user.UserRoleMappings.Any())
+        {
+            foreach (var roleMapping in user.UserRoleMappings)
+            {
+                _context.UserRoleMappingTb.Add(new UserRoleMappingModel
+                {
+                    UserId = user.Id,
+                    RoleId = roleMapping.RoleId
+                });
+            }
+        }
+
+        // 4. บันทึกการเปลี่ยนแปลงและ return จำนวน row ที่ถูก affect
         return _context.SaveChanges();
     }
 }

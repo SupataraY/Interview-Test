@@ -1,1 +1,90 @@
-﻿<p>todo</p>
+﻿<div class="container mt-4">
+  <div class="mb-3">
+    <a routerLink="/users" class="btn btn-secondary">← Back to Users List</a>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && user" class="card">
+    <div class="card-header">
+      <h2>User Details</h2>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>Basic Information</h5>
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <th width="40%">ID</th>
+                <td>{{ user.id }}</td>
+              </tr>
+              <tr>
+                <th>User ID</th>
+                <td>{{ user.userId }}</td>
+              </tr>
+              <tr>
+                <th>Username</th>
+                <td>{{ user.username }}</td>
+              </tr>
+              <tr>
+                <th>First Name</th>
+                <td>{{ user.firstName }}</td>
+              </tr>
+              <tr>
+                <th>Last Name</th>
+                <td>{{ user.lastName }}</td>
+              </tr>
+              <tr>
+                <th>Age</th>
+                <td>{{ user.age ?? 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-md-6">
+          <h5>Roles</h5>
+          <div *ngIf="user.roles && user.roles.length > 0">
+            <ul class="list-group">
+              <li *ngFor="let role of user.roles" class="list-group-item">
+                <strong>{{ role.roleId }}</strong> - {{ role.roleName }}
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="!user.roles || user.roles.length === 0" class="alert alert-info">
+            No roles assigned
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          <h5>Permissions</h5>
+          <div *ngIf="user.permissions && user.permissions.length > 0">
+            <div class="d-flex flex-wrap gap-2">
+              <span *ngFor="let permission of user.permissions" class="badge bg-primary">
+                {{ permission }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="!user.permissions || user.permissions.length === 0" class="alert alert-info">
+            No permissions assigned
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && !user" class="alert alert-warning">
+    User not found
+  </div>
+</div>

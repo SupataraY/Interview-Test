@@ -9,7 +9,7 @@ public class PermissionModel
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long PermissionId { get; set; }
     [Required]
-    [Column(TypeName = "text")]
+    [Column(TypeName = "varchar(100)")]
     public string Permission { get; set; }
     
     // Navigation Property สำหรับ Many-to-Many กับ Role

@@ -5,5 +5,6 @@ import { UserDetailComponent } from './components/user/detail/user-detail.compon
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'users' },
   { path: 'users', component: UsersListComponent },
-  { path: 'users/:id', component: UserDetailComponent }
+  { path: 'users/:id', component: UserDetailComponent },
+  { path: '**', redirectTo: 'users' } // Wildcard route for 404 and reload handling
 ];

@@ -27,7 +27,20 @@ public class UserController : ControllerBase
             return NotFound();
         }
         
-        return Ok(data.Users);
+        return Ok(data);
+    }
+
+    [HttpGet("GetUserAll")]
+    public ActionResult<IEnumerable<UserResponse>> GetUserAll()
+    {
+        var data = _userRepository.GetAllUsers();
+        
+        if (data == null || !data.Any())
+        {
+            return Ok(new List<object>());
+        }
+        
+        return Ok(data);
     }
     
     [HttpPost("CreateUser")]

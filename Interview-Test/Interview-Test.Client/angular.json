@@ -56,7 +56,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "interview-test-client:build"
+            "buildTarget": "interview-test-client:build",
+            "port": 4200,
+            "host": "localhost"
           },
           "configurations": {
             "production": {

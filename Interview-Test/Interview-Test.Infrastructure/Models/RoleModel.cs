@@ -16,5 +16,4 @@ public class RoleModel
     // Navigation Properties
     public ICollection<UserRoleMappingModel>? UserRoleMappings { get; set; }
     public ICollection<RolePermissionModel>? RolePermissions { get; set; }
-    public ICollection<PermissionModel>? Permissions { get; set; }
 }
