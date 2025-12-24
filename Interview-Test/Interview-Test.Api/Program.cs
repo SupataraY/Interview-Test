@@ -10,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+builder.Services.AddTransient<AuthenMiddleware>();
 var connection = "<your database connection string>";
 builder.Services.AddDbContext<InterviewTestDbContext>(options =>
     {
