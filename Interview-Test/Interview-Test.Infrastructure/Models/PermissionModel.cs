@@ -11,6 +11,7 @@ public class PermissionModel
     [Required]
     [Column(TypeName = "text")]
     public string Permission { get; set; }
-    [ForeignKey("RoleId")]
-    public RoleModel Role { get; set; }
+    
+    // Navigation Property สำหรับ Many-to-Many กับ Role
+    public ICollection<RolePermissionModel>? RolePermissions { get; set; }
 }

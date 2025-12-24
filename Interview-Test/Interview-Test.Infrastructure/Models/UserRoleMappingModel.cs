@@ -6,10 +6,17 @@ namespace Interview_Test.Models;
 [Table("UserRoleMappingTb")]
 public class UserRoleMappingModel
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid UserRoleMappingId { get; set; }
+    // Composite Key: UserId + RoleId (จะถูกกำหนดใน Fluent API)
+    [Required]
+    public Guid UserId { get; set; }
+    
+    [Required]
+    public int RoleId { get; set; }
+    
+    // Navigation Properties
     [ForeignKey("UserId")]
-    public UserModel User { get; set; }
+    public UserModel? User { get; set; }
+    
     [ForeignKey("RoleId")]
-    public RoleModel Role { get; set; }
+    public RoleModel? Role { get; set; }
 }

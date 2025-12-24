@@ -7,19 +7,55 @@ services:
     environment:
       SA_PASSWORD: "@Passw0rd"
       ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_COLLATION: "SQL_Latin1_General_CP1_CI_AS"
     ports:
       - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '@Passw0rd' -Q 'SELECT 1' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
-  webapp:
-    image: interview-test.api
-    container_name: webapp
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      #- ConnectionStrings__DefaultConnection=Server=.;Database=InterviewTestDb;User=sa;Password=@Passw0rd;Trusted_Connection=True;TrustServerCertificate=true;
-    depends_on:
-      - sqlserver
-    ports:
-      - "5000:80"
-    build:
-      context: .
-      dockerfile: Dockerfile
+  # webapp:
+  #   image: interview-test.api
+  #   container_name: webapp
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=InterviewTestDb;User=sa;Password=@Passw0rd;TrustServerCertificate=true;
+  #   depends_on:
+  #     sqlserver:
+  #       condition: service_healthy
+  #   ports:
+  #     - "44307:80"
+  #   build:
+  #     context: .
+  #     dockerfile: Interview-Test.Api/Dockerfile
+  #   restart: on-failure
+
+  # gateway:
+  #   image: interview-test.gateway
+  #   container_name: gateway
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #   depends_on:
+  #     - webapp
+  #   ports:
+  #     - "44375:80"
+  #   build:
+  #     context: .
+  #     dockerfile: Interview-Test.GatewayApi/Dockerfile
+  #   restart: on-failure
+
+volumes:
+  sqlserver_data:
+
+networks:
+  app-network:
+    driver: bridge

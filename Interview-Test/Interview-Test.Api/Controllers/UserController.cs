@@ -1,5 +1,7 @@
-﻿using Interview_Test.Models;
+﻿using Interview_Test.Api.DTOs;
+using Interview_Test.Models;
 using Interview_Test.Repositories;
+using Interview_Test.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Interview_Test.Controllers;
@@ -8,17 +10,36 @@ namespace Interview_Test.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    [HttpGet("GetUserById/{id}")]
-    public ActionResult GetUserById(string id)
+    private readonly IUserRepository _userRepository;
+
+    public UserController(IUserRepository userRepository)
     {
-        //Todo: Implement this method
-        return Ok(Data.Users);
+        _userRepository = userRepository;
+    }
+
+    [HttpGet("GetUserById/{id}")]
+    public ActionResult<UserResponse> GetUserById(string id)
+    {
+        var data = _userRepository.GetUserById(id);
+        
+        if (data == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(data.Users);
     }
     
     [HttpPost("CreateUser")]
-    public ActionResult GetUserById(UserModel user)
+    public ActionResult CreateUser([FromBody] UserModel user)
     {
-        //Todo: Implement this method
-        return Ok();
+        var rowsAffected = _userRepository.CreateUser(user);
+        
+        if (rowsAffected > 0)
+        {
+            return Ok(new { message = "User created successfully", rowsAffected });
+        }
+        
+        return BadRequest(new { message = "Failed to create user" });
     }
 }

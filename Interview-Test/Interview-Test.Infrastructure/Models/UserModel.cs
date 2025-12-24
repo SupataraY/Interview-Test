@@ -15,9 +15,6 @@ public class UserModel
     [Required]
     [Column(TypeName = "varchar(100)")]
     public string Username { get; set; }
-    [Required]
-    [DeleteBehavior(DeleteBehavior.Cascade)]
-    public UserProfileModel UserProfile { get; set; }
-    [Required]
-    public ICollection<UserRoleMappingModel> UserRoleMappings { get; set; }
+    public UserProfileModel? UserProfile { get; set; }
+    public ICollection<UserRoleMappingModel>? UserRoleMappings { get; set; }
 }

@@ -1,2 +1,31 @@
 {
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/User/GetUserById/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44307
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/User/GetUserById/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/User/CreateUser",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44307
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/User/CreateUser",
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:44375"
+  }
 }
