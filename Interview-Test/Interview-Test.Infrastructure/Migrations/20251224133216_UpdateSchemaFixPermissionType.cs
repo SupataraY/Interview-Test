@@ -53,6 +53,8 @@ namespace Interview_Test.Infrastructure.Migrations
             
             // Seed Roles
             migrationBuilder.Sql(@"
+                SET IDENTITY_INSERT RoleTb ON;
+                
                 IF NOT EXISTS (SELECT 1 FROM RoleTb WHERE RoleId = 1)
                     INSERT INTO RoleTb (RoleId, RoleName) VALUES (1, 'pick operation');
                 
@@ -61,10 +63,14 @@ namespace Interview_Test.Infrastructure.Migrations
                 
                 IF NOT EXISTS (SELECT 1 FROM RoleTb WHERE RoleId = 3)
                     INSERT INTO RoleTb (RoleId, RoleName) VALUES (3, 'document operation');
+                
+                SET IDENTITY_INSERT RoleTb OFF;
             ");
 
             // Seed Permissions
             migrationBuilder.Sql(@"
+                SET IDENTITY_INSERT PermissionTb ON;
+                
                 IF NOT EXISTS (SELECT 1 FROM PermissionTb WHERE PermissionId = 1)
                     INSERT INTO PermissionTb (PermissionId, Permission) VALUES (1, '1-01-picking-info');
                 
@@ -91,6 +97,8 @@ namespace Interview_Test.Infrastructure.Migrations
                 
                 IF NOT EXISTS (SELECT 1 FROM PermissionTb WHERE PermissionId = 9)
                     INSERT INTO PermissionTb (PermissionId, Permission) VALUES (9, '3-01-printing-label');
+                
+                SET IDENTITY_INSERT PermissionTb OFF;
             ");
 
             // Seed Role-Permission Mappings
