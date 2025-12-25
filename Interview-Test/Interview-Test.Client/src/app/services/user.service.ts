@@ -7,7 +7,7 @@ import { UserListModel, UserDetailModel } from '../models/user-list.model';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  private baseUrl = 'https://localhost:44375/gateway/api/user';
+  private baseUrl = 'http://localhost:44375/gateway/api/user';
   
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({

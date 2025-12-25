@@ -22,36 +22,41 @@ services:
       retries: 5
       start_period: 60s
 
-  # webapp:
-  #   image: interview-test.api
-  #   container_name: webapp
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=InterviewTestDb;User=sa;Password=@Passw0rd;TrustServerCertificate=true;
-  #   depends_on:
-  #     sqlserver:
-  #       condition: service_healthy
-  #   ports:
-  #     - "44307:80"
-  #   build:
-  #     context: .
-  #     dockerfile: Interview-Test.Api/Dockerfile
-  #   restart: on-failure
+  webapp:
+    image: interview-test.api
+    container_name: webapp
+    environment:
+      - ASPNETCORE_URLS=http://+:44307
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=InterviewTestDb;User=sa;Password=@Passw0rd;TrustServerCertificate=true;
+    depends_on:
+      - sqlserver
+        
+    ports:
+      - "44307:44307"
+    build:
+      context: .
+      dockerfile: Interview-Test.Api/Dockerfile
+    restart: on-failure
+    networks:
+      - app-network
 
-  # gateway:
-  #   image: interview-test.gateway
-  #   container_name: gateway
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_URLS=http://+:80
-  #   depends_on:
-  #     - webapp
-  #   ports:
-  #     - "44375:80"
-  #   build:
-  #     context: .
-  #     dockerfile: Interview-Test.GatewayApi/Dockerfile
-  #   restart: on-failure
+  gateway:
+    image: interview-test.gateway
+    container_name: gateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8081
+    depends_on:
+      - webapp
+    ports:
+      - "44375:8081"
+    build:
+      context: .
+      dockerfile: Interview-Test.GatewayApi/Dockerfile
+    restart: on-failure
+    networks:
+      - app-network
 
 volumes:
   sqlserver_data:

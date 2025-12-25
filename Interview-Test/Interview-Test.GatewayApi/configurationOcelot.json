@@ -2,10 +2,10 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/User/GetUserById/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "webapp",
           "Port": 44307
         }
       ],
@@ -14,10 +14,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/User/GetUserAll",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "webapp",
           "Port": 44307
         }
       ],
@@ -26,10 +26,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/User/CreateUser",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "webapp",
           "Port": 44307
         }
       ],
